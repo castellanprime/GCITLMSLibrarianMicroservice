@@ -44,18 +44,9 @@ public class LibrarianService {
 		return null;
 	}
 	
-	private Book getBookById(List<Book> books, int bookId) {
-		for (Book book: books) {
-			if (book.getBookId() == bookId) {
-				return book;
-			}
-		}
-		return null;
-	}
-	
 	@Transactional
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarian/branches/{branchId}", 
+	@RequestMapping(value = "/librarians/branches/{branchId}", 
 		method = RequestMethod.PATCH, 
 		produces = "application/json")
 	public LibraryBranch editBranch(@PathVariable int branchId, 
@@ -82,15 +73,12 @@ public class LibrarianService {
 	
 	@Transactional
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarian/branches/{branchId}/books/{bookId}/copies", 
+	@RequestMapping(value = "/librarians/branches/{branchId}/books/{bookId}/copies", 
 		method = RequestMethod.PATCH, 
 		produces = "application/json")
 	public LibraryBookCopies updateCopiesOfBookInBranch(@RequestBody LibraryBookCopies lbc) throws SQLException{
 		LibraryBookCopies lbco = null;
 		try {
-			//List<LibraryBookCopies> libraryBookBranches = lbcdao.getAllCopiesOfBookInBranch(branchId, bookId);
-			//LibraryBookCopies lbc = libraryBookBranches.get(0);
-			//lbc.setNoOfCopies(copies);
 			lbcdao.updateBookCopies(lbc);
 			lbco = lbcdao.getAllCopiesOfBookInBranch(lbc.getBranchId(), lbc.getBookId()).get(0);
 		} catch (ClassNotFoundException e) {
@@ -101,7 +89,7 @@ public class LibrarianService {
 	
 	@Transactional
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarian/branches/{branchId}/books", 
+	@RequestMapping(value = "/librarians/branches/{branchId}/books", 
 			method = RequestMethod.POST, 
 			produces = "application/json")
 	public LibraryBookCopies addNewBookToBranch(@RequestBody LibraryBookCopies lbc) throws SQLException{
@@ -115,7 +103,7 @@ public class LibrarianService {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarian/branches/books", 
+	@RequestMapping(value = "/librarians/branches/books", 
 		method = RequestMethod.GET, 
 		produces = "application/json")
 	public List<Book> getAllBooksToAddToBranch() throws SQLException{
@@ -129,7 +117,7 @@ public class LibrarianService {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarian/branches/{branchId}/books/{bookId}/copies", 
+	@RequestMapping(value = "/librarians/branches/{branchId}/books/{bookId}/copies", 
 			method = RequestMethod.GET, 
 			produces = "application/json")
 	public LibraryBookCopies getCopiesOfBookInBranch(@PathVariable int branchId, 
