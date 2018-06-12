@@ -27,53 +27,11 @@ import com.gcit.lmslibrarianmicroservice.entity.LibraryBranch;
 public class LibrarianService {
 
 	@Autowired
-	LibraryBranchDAO lbdao;
-	
-	@Autowired
-	BookDAO bdao;
-	
-	@Autowired
 	LibraryBookCopiesDAO lbcdao;
 	
-	private LibraryBranch getBranchByID(List<LibraryBranch> branches, int branchId) {
-		for (LibraryBranch libraryBranch: branches) {
-			if (libraryBranch.getBranchId() == branchId) {
-				return libraryBranch;
-			}
-		}
-		return null;
-	}
-	
 	@Transactional
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarians/branches/{branchId}", 
-		method = RequestMethod.PATCH, 
-		produces = "application/json")
-	public LibraryBranch editBranch(@PathVariable int branchId, 
-			@RequestParam(value="name", required=false) String branchName,
-			@RequestParam(value="address", required=false) String branchAddress)
-			throws SQLException {
-		LibraryBranch branch = null;
-		try {
-			List<LibraryBranch> branches = lbdao.getAllBranches();
-			LibraryBranch libraryBranch = this.getBranchByID(branches, branchId);
-			if (branchName != null && branchName.trim().length() != 0) {
-				lbdao.updateBranchName(libraryBranch, branchName);
-			}
-			if (branchAddress != null && branchAddress.trim().length() != 0) {
-				lbdao.updateBranchAddress(libraryBranch, branchAddress);
-			}
-			branches = lbdao.getAllBranches();
-			branch = this.getBranchByID(branches, branchId);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return branch;
-	}
-	
-	@Transactional
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarians/branches/{branchId}/books/{bookId}/copies", 
+	@RequestMapping(value = "/librarians/branches/books/copies", 
 		method = RequestMethod.PATCH, 
 		produces = "application/json")
 	public LibraryBookCopies updateCopiesOfBookInBranch(@RequestBody LibraryBookCopies lbc) throws SQLException{
@@ -89,7 +47,7 @@ public class LibrarianService {
 	
 	@Transactional
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarians/branches/{branchId}/books", 
+	@RequestMapping(value = "/librarians/branches/books", 
 			method = RequestMethod.POST, 
 			produces = "application/json")
 	public LibraryBookCopies addNewBookToBranch(@RequestBody LibraryBookCopies lbc) throws SQLException{
@@ -100,20 +58,6 @@ public class LibrarianService {
 			e.printStackTrace();
 		}
 		return lbco;
-	}
-	
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/librarians/branches/books", 
-		method = RequestMethod.GET, 
-		produces = "application/json")
-	public List<Book> getAllBooksToAddToBranch() throws SQLException{
-		List<Book> lb = new ArrayList<>();
-		try {
-			lb = bdao.readAllBooks();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return lb;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
